@@ -15,7 +15,6 @@ from metadata.models import LONMetadataSync
 
 
 class MetadataSync:
-
     def __init__(self):
         self.bucket_name = "LightsOn-Metadata-bucket"
         self.bucket_folder_location = f"lon-{settings.DEPLOYMENT_MODE}"
@@ -63,29 +62,39 @@ class MetadataSync:
         elif isinstance(obj, (list, tuple)):
             return [MetadataSync.custom_json_serializer(item) for item in obj]
         elif isinstance(obj, dict):
-            return {str(key): MetadataSync.custom_json_serializer(value) for key, value in
-                    obj.items()}
+            return {
+                str(key): MetadataSync.custom_json_serializer(value) for key, value in obj.items()
+            }
         return str(obj)
 
     @staticmethod
     def serialize_data(queryset, export_pref):
         if export_pref.exclude_columns:
-            exclude_column_names = [item.strip() for item in
-                                    export_pref.exclude_columns.split(',')]
-            return [
-                {key: MetadataSync.custom_json_serializer(value) for key, value in qs.items() if
-                 key not in exclude_column_names} for qs in queryset] if queryset else []
-        return [{key: MetadataSync.custom_json_serializer(value) for key, value in qs.items()} for
-                qs in
-                queryset] if queryset else []
+            exclude_column_names = [
+                item.strip() for item in export_pref.exclude_columns.split(',')
+            ]
+            return (
+                [
+                    {key: MetadataSync.custom_json_serializer(value)
+                     for key, value in qs.items()
+                     if key not in exclude_column_names}
+                    for qs in queryset
+                ] if queryset else []
+            )
+        return (
+            [
+                {key: MetadataSync.custom_json_serializer(value) for key, value in qs.items()}
+                for qs in queryset
+            ] if queryset else []
+        )
 
     @staticmethod
     def prepare_queryset(model_class, export_pref):
         filters = json.loads(export_pref.table_filters) if export_pref.table_filters else {}
         queryset = model_class.objects.filter(**filters).values()
-
         if export_pref.ready_to_copy:
             model_class.objects.filter(**filters).update(ready_to_copy=False)
+
         return queryset
 
     @staticmethod
@@ -95,13 +104,19 @@ class MetadataSync:
         for field in model_class._meta.fields:
             column_data_types[field.name] = {'type': field.get_internal_type()}
             if field.get_internal_type() in (
-                    'ForeignKey', 'LonForeignKey', 'ManyToManyField', 'OneToOneField'):
+                    'ForeignKey',
+                    'LonForeignKey',
+                    'ManyToManyField',
+                    'OneToOneField',
+            ):
                 related_model = field.related_model
                 column_data_types[field.name]['related_model'] = related_model._meta.object_name
                 column_data_types[field.name]['related_app'] = related_model._meta.app_label
                 column_data_types[field.name]['field_name'] = field.attname
                 dependent_models.append(
-                    f'{related_model._meta.app_label}.{related_model._meta.object_name}')
+                    f'{related_model._meta.app_label}.{related_model._meta.object_name}'
+                )
+
         return column_data_types, list(set(dependent_models))
 
     @staticmethod
@@ -110,8 +125,10 @@ class MetadataSync:
         parent_filters = Q()
         for parent_queryset, condition in parent_querysets:
             for field in queryset.model._meta.get_fields():
-                if (isinstance(field, (ForeignKey, ManyToManyField, LonForeignKey))
-                        and field.related_model == parent_queryset.model):
+                if (
+                        isinstance(field, (ForeignKey, ManyToManyField, LonForeignKey))
+                        and field.related_model == parent_queryset.model
+                ):
                     parent_ids = parent_queryset.values_list('pk', flat=True)
                     filter_kwargs = {f'{field.name}__in': parent_ids}
                     if condition == 'AND':
@@ -124,9 +141,8 @@ class MetadataSync:
 
 class ExportMetadata(MetadataSync):
     def process(self, push_option):
-        sys.stdout.write('Exporting metadata...\n')
         all_models = LONMetadataSync.objects.filter(is_active=True)
-        dependencies, meta_tree = {}, {}
+        meta_tree = {}
         for app_model in all_models:
             if not app_model.app_name and not app_model.model_name:
                 continue
@@ -134,7 +150,8 @@ class ExportMetadata(MetadataSync):
                 model_class = apps.get_model(app_model.app_name, app_model.model_name)
             except LookupError:
                 sys.stdout.write(
-                    f"Model '{app_model.app_name, app_model.model_name}' not found. Skipping.\n")
+                    f"Model '{app_model.app_name, app_model.model_name}' not found. Skipping.\n"
+                )
                 continue
             column_data_types, dependent_models = self.get_model_datatypes(model_class)
             meta_tree[f'{app_model.app_name}.{app_model.model_name}'] = {
@@ -142,12 +159,13 @@ class ExportMetadata(MetadataSync):
                 'required_by': [],
                 'metadata': column_data_types,
                 'model': model_class,
-                'app_model': app_model
+                'app_model': app_model,
             }
 
-        dependency_map = {model_name: set(model_data["dependency"]) for model_name, model_data in
-                          meta_tree.items()}
-
+        dependency_map = {
+            model_name: set(model_data["dependency"])
+            for model_name, model_data in meta_tree.items()
+        }
         for model_name, model_data in meta_tree.items():
             for dependency in model_data["dependency"]:
                 if dependency in meta_tree:
@@ -166,13 +184,14 @@ class ExportMetadata(MetadataSync):
             model_class = json_data.pop('model')
             app_model = json_data.pop('app_model')
             queryset = self.prepare_queryset(model_class, app_model)
-
-            # This model depends on something, get its parent queryset
             if json_data['dependency'] and model.inherit_parent_filter:
+                # This model depends on other models, get its parent queryset
                 inherit_filters = json.loads(model.inherit_parent_filter)
-                parent_qs = [(model_qs_mapper[dep], condition) for dep, condition in
-                             inherit_filters.items() if
-                             dep in model_qs_mapper and dep != current_model_app]
+                parent_qs = [
+                    (model_qs_mapper[dep], condition)
+                    for dep, condition in inherit_filters.items()
+                    if dep in model_qs_mapper and dep != current_model_app
+                ]
                 queryset = self.filter_related_data(queryset, parent_qs)
 
             # Store qs if model has any dependent model
@@ -184,13 +203,15 @@ class ExportMetadata(MetadataSync):
             folder = f'{self.local_data_dir}/{model.report_name}'
             self.save_json(json_data, folder, current_model_app)
             files_to_upload.append(f'{model.report_name}/{current_model_app}.json')
-
             sys.stdout.write('Done\n')
+
         if push_option in ('all', 'bucket'):
             sys.stdout.write('Pushing to Object Store...\n')
             for file in files_to_upload:
-                self.object_storage.upload_files_to_object_storage(file,
-                                                                   self.bucket_folder_location)
+                self.object_storage.upload_files_to_object_storage(
+                    file, self.bucket_folder_location
+                )
+
         if push_option in ('all', 'github'):
             sys.stdout.write('Pushing to Git...\n')
             self.git_repo.git_commit(files_to_upload)
@@ -204,7 +225,7 @@ class ObjectStore:
             "fingerprint": "c1:74:3d:f3:b5:40:9f:9c:44:4f:b6:82:86:03:76:bb",
             "tenancy": "ocid1.tenancy.oc1..aaaaaaaavx7he3elr6uirjtqbsaazgs6rkuoopn4ogyqglyfqkkiv53steva",
             "region": "ap-mumbai-1",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaamvaga6h7ttqtan7xnbpa4qem7sxahxfmrjz4wuhvryft5z5dcuja"
+            "compartment_id": "ocid1.compartment.oc1..aaaaaaaamvaga6h7ttqtan7xnbpa4qem7sxahxfmrjz4wuhvryft5z5dcuja",
         }
         self.namespace_name = 'bml6yrcway4k'
         self.bucket_name = bucket_name
@@ -215,15 +236,16 @@ class ObjectStore:
         item_path = os.path.join(self.directory_path, item)
         object_name = os.path.join(parent_folder, item) if parent_folder else item
         with open(item_path, 'rb') as file:
-            self.object_storage.put_object(self.namespace_name, self.bucket_name, object_name,
-                                           file)
+            self.object_storage.put_object(
+                self.namespace_name, self.bucket_name, object_name, file
+            )
         sys.stdout.write(f"Uploaded {object_name}\n")
 
 
 class GitRepo:
     def __init__(self):
-        self.repo_path = 'metadata/local_data'  # Path to your repository directory
-        self.commit_message = f'Exported on {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
+        self.repo_path = 'metadata/local_data'
+        self.commit_message = f'Exported on {datetime.now().strftime("%d-%B-%Y %H:%M:%S")}'
         self.remote_url = f'https://{settings.GIT_METADATA_PAT}@github.cerner.com/EK055891/LightsOn_Site_Metadata.git'
         self.branch_name = f'lon-{settings.DEPLOYMENT_MODE}'
 
@@ -245,8 +267,11 @@ class GitRepo:
     def git_checkout(self):
         self.git_init()
         result = self.run_git_command(['git', 'checkout', self.branch_name], raise_exception=False)
-        git_checkout = ['git', 'checkout', '-b', self.branch_name] if result.returncode else \
-            ['git', 'reset', '--hard', 'HEAD']
+        git_checkout = (
+            ['git', 'checkout', '-b', self.branch_name]
+            if result.returncode
+            else ['git', 'reset', '--hard', 'HEAD']
+        )
         self.run_git_command(git_checkout)
         self.run_git_command(['git', 'pull', 'origin', self.branch_name])
 
