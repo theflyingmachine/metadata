@@ -11,7 +11,6 @@ from django.db.models import ForeignKey, ManyToManyField, Q
 
 from core.models import LonForeignKey
 from lon import settings
-from metadata.models import LONMetadataSync
 
 
 class MetadataSync:
@@ -138,10 +137,7 @@ class MetadataSync:
 
         return queryset.filter(parent_filters)
 
-
-class ExportMetadata(MetadataSync):
-    def process(self, push_option):
-        all_models = LONMetadataSync.objects.filter(is_active=True)
+    def get_meta_tree(self, all_models):
         meta_tree = {}
         for app_model in all_models:
             if not app_model.app_name and not app_model.model_name:
@@ -162,75 +158,42 @@ class ExportMetadata(MetadataSync):
                 'app_model': app_model,
             }
 
-        dependency_map = {
-            model_name: set(model_data["dependency"])
-            for model_name, model_data in meta_tree.items()
-        }
-        for model_name, model_data in meta_tree.items():
-            for dependency in model_data["dependency"]:
-                if dependency in meta_tree:
-                    meta_tree[dependency]["required_by"].append(model_name)
+            for model_name, model_data in meta_tree.items():
+                for dependency in model_data["dependency"]:
+                    if dependency in meta_tree:
+                        meta_tree[dependency]["required_by"].append(model_name)
+        return meta_tree
 
-        models_to_export = self.topological_sort(dependency_map, all_models)
-        model_qs_mapper = {}
-        files_to_upload = []
-        count, total = 0, len(models_to_export)
-        self.git_repo.git_checkout()
-        for model in models_to_export:
-            count += 1
-            current_model_app = f'{model.app_name}.{model.model_name}'
-            sys.stdout.write(f'({count}/{total}) {current_model_app}...')
-            json_data = meta_tree[current_model_app]
-            model_class = json_data.pop('model')
-            app_model = json_data.pop('app_model')
-            queryset = self.prepare_queryset(model_class, app_model)
-            if json_data['dependency'] and model.inherit_parent_filter:
-                # This model depends on other models, get its parent queryset
-                inherit_filters = json.loads(model.inherit_parent_filter)
-                parent_qs = [
-                    (model_qs_mapper[dep], condition)
-                    for dep, condition in inherit_filters.items()
-                    if dep in model_qs_mapper and dep != current_model_app
-                ]
-                queryset = self.filter_related_data(queryset, parent_qs)
+    def export_json(self, model, current_model_app, json_data, model_qs_mapper):
+        model_class = json_data.pop('model')
+        app_model = json_data.pop('app_model')
+        queryset = self.prepare_queryset(model_class, app_model)
+        if json_data['dependency'] and model.inherit_parent_filter:
+            # This model depends on other models, get its parent queryset
+            inherit_filters = json.loads(model.inherit_parent_filter)
+            parent_qs = [
+                (model_qs_mapper[dep], condition)
+                for dep, condition in inherit_filters.items()
+                if dep in model_qs_mapper and dep != current_model_app
+            ]
+            queryset = self.filter_related_data(queryset, parent_qs)
 
-            # Store qs if model has any dependent model
-            if json_data['required_by']:
-                model_qs_mapper[current_model_app] = queryset
+        # Store qs if model has any dependent model
+        if json_data['required_by']:
+            model_qs_mapper[current_model_app] = queryset
 
-            json_data['data'] = self.serialize_data(queryset, model)
+        json_data['data'] = self.serialize_data(queryset, model)
 
-            folder = f'{self.local_data_dir}/{model.report_name}'
-            self.save_json(json_data, folder, current_model_app)
-            files_to_upload.append(f'{model.report_name}/{current_model_app}.json')
-            sys.stdout.write('Done\n')
-
-        if push_option in ('all', 'bucket'):
-            sys.stdout.write('Pushing to Object Store...\n')
-            for file in files_to_upload:
-                self.object_storage.upload_files_to_object_storage(
-                    file, self.bucket_folder_location
-                )
-
-        if push_option in ('all', 'github'):
-            sys.stdout.write('Pushing to Git...\n')
-            self.git_repo.git_commit(files_to_upload)
+        folder = f'{self.local_data_dir}/{model.report_name}'
+        self.save_json(json_data, folder, current_model_app)
 
 
 class ObjectStore:
     def __init__(self, bucket_name, directory_path):
-        config = {
-            "user": "ocid1.user.oc1..aaaaaaaa6gt2deui2xbvww4us6damjazbswbpxsgqfay2me25uvysuutsgaq",
-            "key_file": "/opt/lon/src/eric.kalloor@oracle.com_2024-03-20T18_02_33.544Z.pem",
-            "fingerprint": "c1:74:3d:f3:b5:40:9f:9c:44:4f:b6:82:86:03:76:bb",
-            "tenancy": "ocid1.tenancy.oc1..aaaaaaaavx7he3elr6uirjtqbsaazgs6rkuoopn4ogyqglyfqkkiv53steva",
-            "region": "ap-mumbai-1",
-            "compartment_id": "ocid1.compartment.oc1..aaaaaaaamvaga6h7ttqtan7xnbpa4qem7sxahxfmrjz4wuhvryft5z5dcuja",
-        }
-        self.namespace_name = 'bml6yrcway4k'
+        self.namespace_name = settings.OCI_NAMESPACE
         self.bucket_name = bucket_name
         self.directory_path = directory_path
-        self.object_storage = oci.object_storage.ObjectStorageClient(config)
+        self.object_storage = oci.object_storage.ObjectStorageClient(settings.OCI_BUCKET_CONFIG)
 
     def upload_files_to_object_storage(self, item, parent_folder=''):
         item_path = os.path.join(self.directory_path, item)
