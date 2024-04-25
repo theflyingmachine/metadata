@@ -1,0 +1,35 @@
+{
+    "dependency": [
+        "register.Tenant"
+    ],
+    "required_by": [],
+    "metadata": {
+        "id": {
+            "type": "BigAutoField"
+        },
+        "tenant": {
+            "type": "ForeignKey",
+            "related_model": "Tenant",
+            "related_app": "register",
+            "field_name": "tenant_id"
+        },
+        "cost": {
+            "type": "DecimalField"
+        },
+        "description": {
+            "type": "CharField"
+        },
+        "log_date": {
+            "type": "DateTimeField"
+        }
+    },
+    "data": [
+        {
+            "id": 415,
+            "tenant_id": 3,
+            "cost": "100.00",
+            "description": "Boght",
+            "log_date": "2023-04-29T13:44:28.649184"
+        }
+    ]
+}

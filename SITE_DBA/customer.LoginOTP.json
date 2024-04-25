@@ -1,0 +1,34 @@
+{
+    "dependency": [
+        "register.Customer",
+        "register.Tenant"
+    ],
+    "required_by": [],
+    "metadata": {
+        "id": {
+            "type": "BigAutoField"
+        },
+        "customer": {
+            "type": "ForeignKey",
+            "related_model": "Customer",
+            "related_app": "register",
+            "field_name": "customer_id"
+        },
+        "seller": {
+            "type": "ForeignKey",
+            "related_model": "Tenant",
+            "related_app": "register",
+            "field_name": "seller_id"
+        },
+        "otp_password": {
+            "type": "CharField"
+        },
+        "login_attempt": {
+            "type": "DecimalField"
+        },
+        "generated_date": {
+            "type": "DateTimeField"
+        }
+    },
+    "data": []
+}
