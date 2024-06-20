@@ -23,9 +23,10 @@ pipeline {
          stage('Cleanup Bucket') {
             steps {
                 // Delete all files from the bucket. This is to ensure any files removed from GIT is also deleted from the bucket
-                
-               	sh 'oci os object bulk-delete --profile ${OCI_CLI_PROFILE} -bn ${OCI_BUCKET_NAME}'
-                
+                sh '''
+                . /home/venv/bin/activate
+               	oci os object bulk-delete --profile ${OCI_CLI_PROFILE} -bn ${OCI_BUCKET_NAME}'
+                '''    
             }
         }
 
