@@ -6,7 +6,7 @@ pipeline {
         OCI_BUCKET_NAME = 'MetadataSync'
         SOURCE_DIR = '/var/jenkins_home/workspace/MetadataSyncPipeline'
         VENV_DIR = '/home/venv'
-        WORKSPACE = ${WORKSPACE}
+        WORKSPACE = "${WORKSPACE}"
     }
     stages {
          stage('Cleanup Bucket') {
