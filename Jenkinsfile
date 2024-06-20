@@ -8,6 +8,20 @@ pipeline {
     }
 
     stages {
+
+        stage('Setup Virtual Environment and Install OCI CLI') {
+            steps {
+                script {
+                    sh '''
+                    apt-get install -y python3 python3-venv python3-pip
+                    python3 -m venv ${VENV_DIR}
+                    . ${VENV_DIR}/bin/activate
+                    pip install oci-cli
+                    '''
+                }
+            }
+        }
+
         stage('Upload to OCI Object Storage') {
             steps {
                 script {
