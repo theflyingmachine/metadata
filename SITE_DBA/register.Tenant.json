@@ -1,0 +1,76 @@
+{
+    "dependency": [
+        "auth.User"
+    ],
+    "required_by": [
+        "register.Customer",
+        "customer.LoginOTP",
+        "register.Register",
+        "register.Payment",
+        "register.Income",
+        "register.Expense",
+        "loan.Loan",
+        "register.Balance"
+    ],
+    "metadata": {
+        "tenant": {
+            "type": "OneToOneField",
+            "related_model": "User",
+            "related_app": "auth",
+            "field_name": "tenant_id"
+        },
+        "download_pdf_pref": {
+            "type": "BooleanField"
+        },
+        "sms_pref": {
+            "type": "BooleanField"
+        },
+        "whatsapp_pref": {
+            "type": "BooleanField"
+        },
+        "whatsapp_direct_pref": {
+            "type": "BooleanField"
+        },
+        "email_pref": {
+            "type": "BooleanField"
+        },
+        "customers_bill_access": {
+            "type": "BooleanField"
+        },
+        "bill_till_date": {
+            "type": "BooleanField"
+        },
+        "accept_online_payment": {
+            "type": "BooleanField"
+        },
+        "milk_price": {
+            "type": "DecimalField"
+        },
+        "date_effective": {
+            "type": "DateTimeField"
+        },
+        "contact": {
+            "type": "CharField"
+        },
+        "email": {
+            "type": "CharField"
+        }
+    },
+    "data": [
+        {
+            "tenant_id": 3,
+            "download_pdf_pref": true,
+            "sms_pref": true,
+            "whatsapp_pref": true,
+            "whatsapp_direct_pref": false,
+            "email_pref": true,
+            "customers_bill_access": true,
+            "bill_till_date": true,
+            "accept_online_payment": false,
+            "milk_price": "55.00",
+            "date_effective": "2022-08-23T01:03:16",
+            "contact": "9620413136",
+            "email": "ericabraham.ea@gmail.com"
+        }
+    ]
+}

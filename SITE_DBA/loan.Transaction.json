@@ -1,0 +1,167 @@
+{
+    "dependency": [
+        "loan.Loan"
+    ],
+    "required_by": [],
+    "metadata": {
+        "id": {
+            "type": "BigAutoField"
+        },
+        "loan_id": {
+            "type": "ForeignKey",
+            "related_model": "Loan",
+            "related_app": "loan",
+            "field_name": "loan_id_id"
+        },
+        "transaction_amount": {
+            "type": "DecimalField"
+        },
+        "type": {
+            "type": "CharField"
+        },
+        "transaction_date": {
+            "type": "DateTimeField"
+        },
+        "notes": {
+            "type": "TextField"
+        }
+    },
+    "data": [
+        {
+            "id": 1,
+            "loan_id_id": 3,
+            "transaction_amount": "3000.00",
+            "type": "INTEREST",
+            "transaction_date": "2023-07-24T20:30:58.052928",
+            "notes": "July to December"
+        },
+        {
+            "id": 2,
+            "loan_id_id": 3,
+            "transaction_amount": "1480.00",
+            "type": "INTEREST",
+            "transaction_date": "2023-07-24T20:32:06.255651",
+            "notes": "January and previous due"
+        },
+        {
+            "id": 3,
+            "loan_id_id": 3,
+            "transaction_amount": "1280.00",
+            "type": "INTEREST",
+            "transaction_date": "2023-07-24T20:33:08.617437",
+            "notes": "February and March and previous due"
+        },
+        {
+            "id": 4,
+            "loan_id_id": 3,
+            "transaction_amount": "1560.00",
+            "type": "INTEREST",
+            "transaction_date": "2023-07-24T20:34:19.990053",
+            "notes": "March due and April May"
+        },
+        {
+            "id": 5,
+            "loan_id_id": 3,
+            "transaction_amount": "10000.00",
+            "type": "PRINCIPAL",
+            "transaction_date": "2023-08-15T10:51:22.273804",
+            "notes": ""
+        },
+        {
+            "id": 6,
+            "loan_id_id": 3,
+            "transaction_amount": "1280.00",
+            "type": "INTEREST",
+            "transaction_date": "2023-08-15T10:52:10.298968",
+            "notes": "For jun july"
+        },
+        {
+            "id": 7,
+            "loan_id_id": 5,
+            "transaction_amount": "50000.00",
+            "type": "PRINCIPAL",
+            "transaction_date": "2023-08-15T22:54:51.689087",
+            "notes": ""
+        },
+        {
+            "id": 8,
+            "loan_id_id": 5,
+            "transaction_amount": "50000.00",
+            "type": "PRINCIPAL",
+            "transaction_date": "2023-08-15T22:54:58.901236",
+            "notes": ""
+        },
+        {
+            "id": 9,
+            "loan_id_id": 5,
+            "transaction_amount": "50000.00",
+            "type": "PRINCIPAL",
+            "transaction_date": "2023-08-15T22:55:06.603600",
+            "notes": ""
+        },
+        {
+            "id": 10,
+            "loan_id_id": 5,
+            "transaction_amount": "50000.00",
+            "type": "PRINCIPAL",
+            "transaction_date": "2023-08-17T22:01:21.019212",
+            "notes": ""
+        },
+        {
+            "id": 11,
+            "loan_id_id": 2,
+            "transaction_amount": "2000.00",
+            "type": "PRINCIPAL",
+            "transaction_date": "2023-08-19T17:17:41.985068",
+            "notes": ""
+        },
+        {
+            "id": 12,
+            "loan_id_id": 1,
+            "transaction_amount": "600.00",
+            "type": "INTEREST",
+            "transaction_date": "2023-09-15T21:45:02.823411",
+            "notes": "July aug intrest"
+        },
+        {
+            "id": 13,
+            "loan_id_id": 1,
+            "transaction_amount": "600.00",
+            "type": "INTEREST",
+            "transaction_date": "2023-12-22T23:06:53.528691",
+            "notes": ""
+        },
+        {
+            "id": 14,
+            "loan_id_id": 1,
+            "transaction_amount": "300.00",
+            "type": "INTEREST",
+            "transaction_date": "2024-01-25T07:35:45.676575",
+            "notes": "Interest"
+        },
+        {
+            "id": 15,
+            "loan_id_id": 1,
+            "transaction_amount": "300.00",
+            "type": "INTEREST",
+            "transaction_date": "2024-02-25T18:19:11.265977",
+            "notes": ""
+        },
+        {
+            "id": 16,
+            "loan_id_id": 1,
+            "transaction_amount": "300.00",
+            "type": "INTEREST",
+            "transaction_date": "2024-02-25T18:20:16.627142",
+            "notes": ""
+        },
+        {
+            "id": 19,
+            "loan_id_id": 1,
+            "transaction_amount": "15000.00",
+            "type": "PRINCIPAL",
+            "transaction_date": "2024-03-05T13:33:23.705659",
+            "notes": ""
+        }
+    ]
+}
