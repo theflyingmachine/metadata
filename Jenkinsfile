@@ -26,14 +26,9 @@ pipeline {
         stage('Upload to OCI Object Storage') {
             steps {
                 script {
-                    echo "OCI_CONFIG_FILE_ID: ${OCI_CONFIG_FILE_ID}"
-                    echo "OCI_KEY_FILE_ID: ${OCI_KEY_FILE_ID}"
-                    
                     // Load OCI config file and key file from Jenkins credentials
                     withCredentials([file(credentialsId: "${OCI_CONFIG_FILE_ID}", variable: 'OCI_CONFIG_FILE')]) {
                         withCredentials([file(credentialsId: "${OCI_KEY_FILE_ID}", variable: 'OCI_KEY_FILE')]) {
-                            echo "Using config file: ${OCI_CONFIG_FILE}"
-                            echo "Using key file: ${OCI_KEY_FILE}"
                             
                             sh """
                             . ${VENV_DIR}/bin/activate
