@@ -5,7 +5,7 @@ pipeline {
         OCI_BUCKET_NAME = 'MetadataSync'
         VENV_DIR = '/home/venv'
         BUCKET_DEST_DIR = 'master-oc2/'
-        OCI_CLI_CONFIG_FILE = credentials('OCI_CLI_CONFIG_FILE')
+        OCI_CONFIG_FILE = credentials('OCI_CONFIG_FILE')
     }
 
     stages {
@@ -27,7 +27,7 @@ pipeline {
             steps {
                 sh '''
                 mkdir -p ~/.oci
-                echo "${OCI_CLI_CONFIG_FILE}" > ~/.oci/config1
+                echo "${OCI_CONFIG_FILE}" > ~/.oci/config1
                 chmod 600 ~/.oci/config1
                 '''
             }
