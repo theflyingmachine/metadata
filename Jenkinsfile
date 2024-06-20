@@ -11,15 +11,12 @@ pipeline {
         stage('Upload to OCI Object Storage') {
             steps {
                 script {
-
-                    // Load OCI config file and key file from Jenkins credentials
-
-                            sh """
-                            . ${VENV_DIR}/bin/activate
-                            oci os object bulk-delete -bn ${OCI_BUCKET_NAME} --force
-                            oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${WORKSPACE} --prefix ${BUCKET_DEST_DIR} --include '*.json' --overwrite
-                            """
-                       
+                    // Delete all files from the bucket and upload. This is to ensure any files removed from GIT is also deleted from the bucket
+                    sh """
+                    . ${VENV_DIR}/bin/activate
+                    oci os object bulk-delete -bn ${OCI_BUCKET_NAME} --force
+                    oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${WORKSPACE} --prefix ${BUCKET_DEST_DIR} --include '*.json' --overwrite
+                    """       
                 }
             }
         }
