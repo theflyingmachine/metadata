@@ -9,14 +9,14 @@ pipeline {
         SOURCE_DIR = '/var/jenkins_home/workspace/MetadataSyncPipeline'
     }
     stages {
-        stage('Checkout') {
-            steps {
-                // Mark the workspace as a safe directory for Git
+        // stage('Checkout') {
+        //     steps {
+        //         // Mark the workspace as a safe directory for Git
                 
-               	sh 'git config --global --add safe.directory /var/jenkins_home/workspace/MetadataSyncPipeline'
-                git branch: 'master-oc2', url: 'https://github.com/theflyingmachine/metadata.git'
-            }
-        }
+        //        	sh 'git config --global --add safe.directory /var/jenkins_home/workspace/MetadataSyncPipeline'
+        //         git branch: 'master-oc2', url: 'https://github.com/theflyingmachine/metadata.git'
+        //     }
+        // }
 
          stage('Cleanup Bucket') {
             steps {
