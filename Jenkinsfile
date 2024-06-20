@@ -36,7 +36,7 @@ pipeline {
                     cd /var/jenkins_home/workspace/MetadataSyncPipeline
                     . /home/venv/bin/activate
 
-                    oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${SOURCE_DIR} --config-file /root/.oci/config  --region ${OCI_REGION} --include '*.json' --overwrite
+                    oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${SOURCE_DIR} --prefix master-oc2/ --config-file /root/.oci/config  --region ${OCI_REGION} --include '*.json' --overwrite
                     '''      
                 }
             }
