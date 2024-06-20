@@ -3,9 +3,7 @@ pipeline {
     agent any
 
     environment {
-        OCI_CLI_CONFIG_FILE = credentials('OCI_CLI_CONFIG_FILE')
         OCI_BUCKET_NAME = 'MetadataSync'
-        OCI_CLI_PROFILE = 'DEFAULT' // Update with your OCI CLI profile name
         OCI_REGION = 'ap-mumbai-1' // Update with your OCI region
         VENV_DIR = 'venv' // Directory for the virtual environment
         SOURCE_DIR = '/var/jenkins_home/workspace/MetadataSyncPipeline'
@@ -25,7 +23,7 @@ pipeline {
                 // Delete all files from the bucket. This is to ensure any files removed from GIT is also deleted from the bucket
                 sh '''
                 . /home/venv/bin/activate
-               	oci os object bulk-delete --profile ${OCI_CLI_PROFILE} -bn ${OCI_BUCKET_NAME}
+               	oci os object bulk-delete -bn ${OCI_BUCKET_NAME}
                 '''    
             }
         }
@@ -38,7 +36,7 @@ pipeline {
                     cd /var/jenkins_home/workspace/MetadataSyncPipeline
                     . /home/venv/bin/activate
 
-                    oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${SOURCE_DIR} --config-file /root/.oci/config --profile ${OCI_CLI_PROFILE} --region ${OCI_REGION} --include '*.json' --overwrite
+                    oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${SOURCE_DIR} --config-file /root/.oci/config  --region ${OCI_REGION} --include '*.json' --overwrite
                     '''      
                 }
             }
