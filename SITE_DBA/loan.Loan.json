@@ -1,0 +1,69 @@
+{
+    "dependency": [
+        "register.Tenant"
+    ],
+    "required_by": [
+        "loan.Transaction"
+    ],
+    "metadata": {
+        "id": {
+            "type": "BigAutoField"
+        },
+        "tenant": {
+            "type": "ForeignKey",
+            "related_model": "Tenant",
+            "related_app": "register",
+            "field_name": "tenant_id"
+        },
+        "name": {
+            "type": "CharField"
+        },
+        "amount": {
+            "type": "DecimalField"
+        },
+        "interest_rate": {
+            "type": "DecimalField"
+        },
+        "lending_date": {
+            "type": "DateTimeField"
+        },
+        "status": {
+            "type": "BooleanField"
+        },
+        "notes": {
+            "type": "TextField"
+        }
+    },
+    "data": [
+        {
+            "id": 4,
+            "tenant_id": 3,
+            "name": "Beeta",
+            "amount": "55000.00",
+            "interest_rate": "0.00",
+            "lending_date": "2023-01-01T00:00:00",
+            "status": true,
+            "notes": ""
+        },
+        {
+            "id": 5,
+            "tenant_id": 3,
+            "name": "Nik",
+            "amount": "200000.00",
+            "interest_rate": "0.00",
+            "lending_date": "2023-08-01T00:00:00",
+            "status": false,
+            "notes": ""
+        },
+        {
+            "id": 6,
+            "tenant_id": 3,
+            "name": "Nik",
+            "amount": "125000.00",
+            "interest_rate": "0.00",
+            "lending_date": "2023-07-01T00:00:00",
+            "status": true,
+            "notes": ""
+        }
+    ]
+}

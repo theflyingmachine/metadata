@@ -1,0 +1,47 @@
+{
+    "dependency": [
+        "register.Customer",
+        "register.Tenant"
+    ],
+    "required_by": [],
+    "metadata": {
+        "tenant": {
+            "type": "ForeignKey",
+            "related_model": "Tenant",
+            "related_app": "register",
+            "field_name": "tenant_id"
+        },
+        "customer": {
+            "type": "OneToOneField",
+            "related_model": "Customer",
+            "related_app": "register",
+            "field_name": "customer_id"
+        },
+        "balance_amount": {
+            "type": "DecimalField"
+        },
+        "last_balance_amount": {
+            "type": "DecimalField"
+        }
+    },
+    "data": [
+        {
+            "tenant_id": 3,
+            "customer_id": 78,
+            "balance_amount": "0.00",
+            "last_balance_amount": "0.00"
+        },
+        {
+            "tenant_id": 3,
+            "customer_id": 79,
+            "balance_amount": "0.00",
+            "last_balance_amount": "0.00"
+        },
+        {
+            "tenant_id": 3,
+            "customer_id": 80,
+            "balance_amount": "0.00",
+            "last_balance_amount": "60.00"
+        }
+    ]
+}

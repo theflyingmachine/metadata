@@ -1,0 +1,91 @@
+{
+    "dependency": [
+        "register.Customer"
+    ],
+    "required_by": [],
+    "metadata": {
+        "id": {
+            "type": "UUIDField"
+        },
+        "customer": {
+            "type": "ForeignKey",
+            "related_model": "Customer",
+            "related_app": "register",
+            "field_name": "customer_id"
+        },
+        "bill_number": {
+            "type": "CharField"
+        },
+        "amount": {
+            "type": "DecimalField"
+        },
+        "status": {
+            "type": "CharField"
+        },
+        "status_msg": {
+            "type": "CharField"
+        },
+        "token": {
+            "type": "CharField"
+        },
+        "order_id": {
+            "type": "CharField"
+        },
+        "online_transaction_id": {
+            "type": "CharField"
+        },
+        "raw_resp": {
+            "type": "TextField"
+        },
+        "created_at": {
+            "type": "DateTimeField"
+        },
+        "updated_at": {
+            "type": "DateTimeField"
+        }
+    },
+    "data": [
+        {
+            "id": "38fc3a8c-2eb9-43c7-b67e-97902528a66c",
+            "customer_id": 80,
+            "bill_number": "MB-80-2022-8-EZ8041H",
+            "amount": "2244.00",
+            "status": "Init",
+            "status_msg": "",
+            "token": "44be42d7226548179301363a4eeaa7d31660823410975",
+            "order_id": "MB-80-2022-8-EZ8041H",
+            "online_transaction_id": "",
+            "raw_resp": null,
+            "created_at": "2022-08-18T17:20:11.235860",
+            "updated_at": "2022-08-18T17:20:11.235893"
+        },
+        {
+            "id": "905ae625-c7d7-45a7-9322-8703b8135890",
+            "customer_id": 80,
+            "bill_number": "MB-80-2022-8-I07FNXU",
+            "amount": "2244.00",
+            "status": "Init",
+            "status_msg": "",
+            "token": "aad198bd70224bb6aae3ca3a9d6908d11660823411356",
+            "order_id": "MB-80-2022-8-I07FNXU",
+            "online_transaction_id": "",
+            "raw_resp": null,
+            "created_at": "2022-08-18T17:20:11.605243",
+            "updated_at": "2022-08-18T17:20:11.605276"
+        },
+        {
+            "id": "b05db499-35fc-4594-9b8f-f7e79a999bf7",
+            "customer_id": 79,
+            "bill_number": "MB-79-2022-8-3C3A45D",
+            "amount": "1248.00",
+            "status": "Init",
+            "status_msg": "",
+            "token": "f383ba0625f4472ebe2a1cb32ff9e3df1660823409715",
+            "order_id": "MB-79-2022-8-3C3A45D",
+            "online_transaction_id": "",
+            "raw_resp": null,
+            "created_at": "2022-08-18T17:20:10.027968",
+            "updated_at": "2022-08-18T17:20:10.028002"
+        }
+    ]
+}

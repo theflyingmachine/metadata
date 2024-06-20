@@ -1,0 +1,92 @@
+{
+    "dependency": [
+        "register.Tenant"
+    ],
+    "required_by": [
+        "register.Bill",
+        "customer.LoginOTP",
+        "register.Register",
+        "register.Payment",
+        "register.Balance",
+        "bill.OnlinePayment"
+    ],
+    "metadata": {
+        "id": {
+            "type": "BigAutoField"
+        },
+        "tenant": {
+            "type": "ForeignKey",
+            "related_model": "Tenant",
+            "related_app": "register",
+            "field_name": "tenant_id"
+        },
+        "name": {
+            "type": "CharField"
+        },
+        "contact": {
+            "type": "CharField"
+        },
+        "email": {
+            "type": "CharField"
+        },
+        "morning": {
+            "type": "BooleanField"
+        },
+        "evening": {
+            "type": "BooleanField"
+        },
+        "m_quantity": {
+            "type": "IntegerField"
+        },
+        "e_quantity": {
+            "type": "IntegerField"
+        },
+        "status": {
+            "type": "BooleanField"
+        },
+        "member_since": {
+            "type": "DateTimeField"
+        }
+    },
+    "data": [
+        {
+            "id": 78,
+            "tenant_id": 3,
+            "name": "Eric",
+            "contact": "9620413136",
+            "email": null,
+            "morning": true,
+            "evening": false,
+            "m_quantity": 1000,
+            "e_quantity": null,
+            "status": true,
+            "member_since": "2022-08-18T14:30:38.363126"
+        },
+        {
+            "id": 79,
+            "tenant_id": 3,
+            "name": "Nikitha",
+            "contact": "8277300981",
+            "email": "nikithapoolanda@gmail.com",
+            "morning": false,
+            "evening": true,
+            "m_quantity": null,
+            "e_quantity": 500,
+            "status": true,
+            "member_since": "2022-08-18T14:31:00.229207"
+        },
+        {
+            "id": 80,
+            "tenant_id": 3,
+            "name": "Cyberboy Inc",
+            "contact": "7677337557",
+            "email": null,
+            "morning": true,
+            "evening": false,
+            "m_quantity": 1500,
+            "e_quantity": null,
+            "status": true,
+            "member_since": "2022-08-18T14:32:22.842259"
+        }
+    ]
+}
