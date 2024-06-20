@@ -37,8 +37,8 @@ pipeline {
                             
                             sh """
                             . ${VENV_DIR}/bin/activate
-                            oci os object bulk-delete -bn ${OCI_BUCKET_NAME} --force --config-file \${OCI_CONFIG_FILE} --key-file \${OCI_KEY_FILE}
-                            oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${WORKSPACE} --prefix ${BUCKET_DEST_DIR} --include '*.json' --overwrite --config-file \${OCI_CONFIG_FILE} --key-file \${OCI_KEY_FILE}
+                            oci os object bulk-delete -bn ${OCI_BUCKET_NAME} --force --config-file \${OCI_CONFIG_FILE}
+                            oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${WORKSPACE} --prefix ${BUCKET_DEST_DIR} --include '*.json' --overwrite --config-file \${OCI_CONFIG_FILE}
                             """
                         }
                     }
