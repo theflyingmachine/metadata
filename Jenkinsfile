@@ -8,6 +8,11 @@ pipeline {
         OCI_CONFIG_FILE_ID = 'OCI_CONFIG_FILE' // Jenkins credential ID for OCI config file
     }
 
+    options {
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '30'))
+    }
+
     stages {
         stage('Setup Virtual Environment and Install OCI CLI') {
             steps {
