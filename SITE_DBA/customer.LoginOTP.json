@@ -17,8 +17,7 @@
         "seller": {
             "type": "ForeignKey",
             "related_model": "Tenant",
-            "related_app": "register",
-            "field_name": "seller_id"
+            "related_app": "register"
         },
         "otp_password": {
             "type": "CharField"
