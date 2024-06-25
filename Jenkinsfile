@@ -26,6 +26,23 @@ pipeline {
                 }
             }
         }
+
+        stage('Archive Artifacts') {
+            steps {
+                // Add your artifact archiving steps here
+                script {
+                    // Create a zip file containing the SITE_DBA and SLA_DBA folders
+                    sh '''
+                    zip -r LON_METADATA.zip SITE_DBA SLA_DBA
+                    // Calculate SHA-256 checksum and store it in a variable
+                    def sha256 = sh(script: 'sha256sum LON_METADATA.zip | awk \'{ print $1 }\'', returnStdout: true).trim()
+                    echo "SHA-256: ${sha256}"
+                    // Store the checksum in the environment variable
+                    env.ZIP_SHA256 = sha256
+                    '''
+                }
+            }
+        }
         
         stage('Upload to OCI Object Storage') {
             steps {
@@ -35,11 +52,29 @@ pipeline {
                         sh """
                         . ${VENV_DIR}/bin/activate
                         oci os object bulk-delete -bn ${OCI_BUCKET_NAME} --force --config-file \${OCI_CONFIG_FILE}
-                        oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${WORKSPACE} --prefix ${BUCKET_DEST_DIR} --include '*.json' --overwrite --config-file \${OCI_CONFIG_FILE}
+                        oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${WORKSPACE} --prefix ${BUCKET_DEST_DIR} --include '*.zip' --overwrite --config-file \${OCI_CONFIG_FILE}
                         """
                     }
                 }
             }
+        }
+
+
+        stage('Trigger SLAPS Scan') {
+            steps {
+                script {
+                    // Use the SHA-256 checksum from the previous stage
+                    echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
+                    // Add further steps that require the checksum here
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up workspace after build
+            cleanWs()
         }
     }
 }
