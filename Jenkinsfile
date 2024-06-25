@@ -32,14 +32,13 @@ pipeline {
                 // Add your artifact archiving steps here
                 script {
                     // Create a zip file containing the SITE_DBA and SLA_DBA folders
-                    sh '''
-                    zip -r LON_METADATA.zip *_DBA/
+                    sh 'zip -r LON_METADATA.zip *_DBA/'
                     // Calculate SHA-256 checksum and store it in a variable
                     def sha256 = sh(script: 'sha256sum LON_METADATA.zip | awk \'{ print $1 }\'', returnStdout: true).trim()
                     echo "SHA-256: ${sha256}"
                     // Store the checksum in the environment variable
                     env.ZIP_SHA256 = sha256
-                    '''
+                   
                 }
             }
         }
