@@ -14,18 +14,18 @@ pipeline {
     }
 
     stages {
-        stage('Setup Virtual Environment and Install OCI CLI') {
-            steps {
-                script {
-                    sh '''
-                    apt-get install -y python3 python3-venv python3-pip zip
-                    python3 -m venv ${VENV_DIR}
-                    . ${VENV_DIR}/bin/activate
-                    pip install oci-cli
-                    '''
-                }
-            }
-        }
+        // stage('Setup Virtual Environment and Install OCI CLI') {
+        //     steps {
+        //         script {
+        //             sh '''
+        //             apt-get install -y python3 python3-venv python3-pip zip
+        //             python3 -m venv ${VENV_DIR}
+        //             . ${VENV_DIR}/bin/activate
+        //             pip install oci-cli
+        //             '''
+        //         }
+        //     }
+        // }
 
         stage('Archive Artifacts') {
             steps {
@@ -33,7 +33,7 @@ pipeline {
                 script {
                     // Create a zip file containing the SITE_DBA and SLA_DBA folders
                     sh '''
-                    zip -r LON_METADATA.zip SITE_DBA SLA_DBA
+                    zip -r LON_METADATA.zip *_DBA/
                     // Calculate SHA-256 checksum and store it in a variable
                     def sha256 = sh(script: 'sha256sum LON_METADATA.zip | awk \'{ print $1 }\'', returnStdout: true).trim()
                     echo "SHA-256: ${sha256}"
