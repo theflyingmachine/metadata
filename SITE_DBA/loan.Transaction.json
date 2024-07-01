@@ -154,6 +154,14 @@
             "type": "INTEREST",
             "transaction_date": "2024-02-25T18:20:16.627142",
             "notes": ""
+        },
+        {
+            "id": 17,
+            "loan_id_id": 1,
+            "transaction_amount": "300.00",
+            "type": "INTEREST",
+            "transaction_date": "2024-02-25T18:20:16.627142",
+            "notes": ""
         }
     ]
 }
