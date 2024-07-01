@@ -16,7 +16,7 @@
             "field_name": "tenant_id"
         },
         "name": {
-            "type": "CharField"
+            "type": "CharFielda"
         },
         "amount": {
             "type": "DecimalField"
