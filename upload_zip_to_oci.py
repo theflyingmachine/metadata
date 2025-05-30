@@ -1,3 +1,4 @@
+import ast
 import oci
 import os
 
@@ -12,9 +13,10 @@ file_path = os.environ["file_path"]
 object_name = os.path.basename(file_path)
 
 # === INITIATE OBJECT STORAGE CLIENT ===
-print(WEB_CONFIG)
-print(type(WEB_CONFIG))
-object_storage = oci.object_storage.ObjectStorageClient(WEB_CONFIG)
+print(ast.literal_eval(WEB_CONFIG))
+print(type(ast.literal_eval(WEB_CONFIG)))
+
+object_storage = oci.object_storage.ObjectStorageClient(ast.literal_eval(WEB_CONFIG))
 
 # === UPLOAD FILE ===
 try:
