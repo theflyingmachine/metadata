@@ -4,7 +4,7 @@ pipeline {
     environment {
         OCI_BUCKET_NAME = 'LightsOn-Metadata-bucket'
         BUCKET_DEST_DIR = 'master-oc2/'
-        OCI_CONFIG_FILE_ID = 'OCI_CONFIG_FILE' // Jenkins credential ID for OCI config file
+        OCI_CONFIG_FILE_ID = 'OCI_CONFIG' // Jenkins credential ID for OCI config file
         DOCKER_IMAGE_NAME = 'json-validator:latest'
     }
 
