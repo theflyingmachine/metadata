@@ -71,7 +71,7 @@ pipeline {
                     file(credentialsId: OCI_CONFIG_FILE_ID, variable: 'OCI_KEY_FILE')
                 ]) {
                     withEnv([
-                        'file_path=${BUCKET_DEST_DIR}.zip'
+                        "file_path=${BUCKET_DEST_DIR}.zip"
                     ]) {
                        sh '''
                             python3 -m venv venv
