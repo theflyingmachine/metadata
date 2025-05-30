@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         OCI_BUCKET_NAME = 'LightsOn-Metadata-bucket'
-        BUCKET_DEST_DIR = 'master-oc2/'
+        BUCKET_DEST_DIR = env.GIT_BRANCH.tokenize('/').last()
         OCI_CONFIG_FILE_ID = 'OCI_CONFIG' // Jenkins credential ID for OCI config file
         DOCKER_IMAGE_NAME = 'json-validator:latest'
     }
