@@ -67,16 +67,26 @@ pipeline {
                 }
             }
             steps {
-                script {
-                    // Delete all files from the bucket. This is to ensure any files removed from GIT is also deleted from the bucket
-                    withCredentials([file(credentialsId: "${OCI_CONFIG_FILE_ID}", variable: 'OCI_CONFIG_FILE')]) {
-                        sh '''
-                        export PATH=$PATH:/home/jenkins/bin
-                        oci os object bulk-delete -bn ${OCI_BUCKET_NAME} --force --config-file ${OCI_CONFIG_FILE}
-                        oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${WORKSPACE} --include "*.json" --include "*.zip" --overwrite --config-file ${OCI_CONFIG_FILE}
-                        '''
-                    }
-                }
+                    withCredentials([
+                    file(credentialsId: OCI_CONFIG_FILE_ID, variable: 'OCI_KEY_FILE')
+                        ]) {
+                            withEnv([
+                                'file_path=LON_METADATA.zip'
+                            ]) {
+                                sh 'pip3 install --user oci' // Or use a prebuilt image with OCI SDK
+                                sh 'python3 upload_zip_to_oci.py'
+                            }
+                        }
+//                 script {
+//                     // Delete all files from the bucket. This is to ensure any files removed from GIT is also deleted from the bucket
+//                     withCredentials([file(credentialsId: "${OCI_CONFIG_FILE_ID}", variable: 'OCI_CONFIG_FILE')]) {
+//                         sh '''
+//                         export PATH=$PATH:/home/jenkins/bin
+//                         oci os object bulk-delete -bn ${OCI_BUCKET_NAME} --force --config-file ${OCI_CONFIG_FILE}
+//                         oci os object bulk-upload -bn ${OCI_BUCKET_NAME} --src-dir ${WORKSPACE} --include "*.json" --include "*.zip" --overwrite --config-file ${OCI_CONFIG_FILE}
+//                         '''
+//                     }
+//                 }
                 // Use the SHA-256 checksum from the previous stage
                 echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
                 // Add further steps that require the checksum her
