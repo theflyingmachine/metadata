@@ -47,6 +47,7 @@ pipeline {
             steps {
                 script {
                     // Create a zip file containing the SITE_DBA and SLA_DBA folders
+                    sh 'apt-get update && apt-get install -y zip'
                     sh 'mkdir ${BUCKET_DEST_DIR}'
                     sh 'mv *_DBA/ ${BUCKET_DEST_DIR}'
                     sh 'zip -r LON_METADATA.zip ${BUCKET_DEST_DIR}'
