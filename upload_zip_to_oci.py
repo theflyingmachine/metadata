@@ -5,9 +5,9 @@ import os
 with open(os.environ["OCI_KEY_FILE"], "r") as f:
     WEB_CONFIG = f.read()
 
-bucket_name = 'LightsOn-Metadata-bucket'
-namespace = 'bmsfecivotax'  # Replace with your actual namespace
+namespace = os.environ["namespace"]
 file_path = os.environ["file_path"]
+bucket_name = os.environ["bucket_name"]
 object_name = os.path.basename(file_path)
 object_storage = oci.object_storage.ObjectStorageClient(ast.literal_eval(WEB_CONFIG))
 

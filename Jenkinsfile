@@ -5,6 +5,7 @@ pipeline {
         OCI_BUCKET_NAME = 'LightsOn-Metadata-bucket'
         BUCKET_DEST_DIR = env.GIT_BRANCH.tokenize('/').last()
         OCI_CONFIG_FILE_ID = 'OCI_CONFIG' // Jenkins credential ID for OCI config file
+        BUCKET_NAMESPACE = 'bmsfecivotax'
         DOCKER_IMAGE_NAME = 'json-validator:latest'
     }
 
@@ -71,7 +72,9 @@ pipeline {
                     file(credentialsId: OCI_CONFIG_FILE_ID, variable: 'OCI_KEY_FILE')
                 ]) {
                     withEnv([
-                        "file_path=${BUCKET_DEST_DIR}.zip"
+                        "file_path=${BUCKET_DEST_DIR}.zip",
+                        "namespace=${BUCKET_NAMESPACE}",
+                        "bucket_name=${OCI_BUCKET_NAME}"
                     ]) {
                        sh '''
                            if [ ! -d "venv" ]; then
@@ -85,9 +88,7 @@ pipeline {
                             '''
                     }
                 }
-                // here comes the problem
                 echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
-                // Add further steps here
             }
         }
 
