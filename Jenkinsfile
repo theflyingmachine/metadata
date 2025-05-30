@@ -73,8 +73,12 @@ pipeline {
                     withEnv([
                         'file_path=LON_METADATA.zip'
                     ]) {
-                        sh 'pip3 install --user oci'
-                        sh 'python3 upload_zip_to_oci.py'
+                       sh '''
+                            python3 -m venv venv
+                            . venv/bin/activate
+                            pip install oci
+                            python3 upload_zip_to_oci.py
+                            '''
                     }
                 }
                 // here comes the problem
