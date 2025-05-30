@@ -68,14 +68,13 @@ pipeline {
             }
             steps {
                     withCredentials([
-                    file(credentialsId: OCI_CONFIG_FILE_ID, variable: 'OCI_KEY_FILE')
-                        ]) {
-                            withEnv([
-                                'file_path=LON_METADATA.zip'
-                            ]) {
-                                sh 'pip3 install --user oci' // Or use a prebuilt image with OCI SDK
-                                sh 'python3 upload_zip_to_oci.py'
-                            }
+                                    withCredentials([file(credentialsId: OCI_CONFIG_FILE_ID, variable: 'OCI_KEY_FILE')]) {
+                            sh '''
+                                python3 -m venv venv
+                                . venv/bin/activate
+                                pip install oci
+                                python upload_zip_to_oci.py
+                            '''
                         }
 //                 script {
 //                     // Delete all files from the bucket. This is to ensure any files removed from GIT is also deleted from the bucket
