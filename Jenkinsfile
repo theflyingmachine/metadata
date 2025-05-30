@@ -40,7 +40,7 @@ pipeline {
             when {
                    expression {
                     def isNotPR = !env.CHANGE_ID || env.CHANGE_ID.trim() == ""
-                    def isMasterOc2Branch = env.GIT_BRANCH?.trim() == 'origin/master-oc2'
+                    def isMasterOc2Branch = env.GIT_BRANCH?.trim() == 'origin/master-oc1'
                     return isNotPR && isMasterOc2Branch
                 }
             }
@@ -62,7 +62,7 @@ pipeline {
             when {
                 expression {
                     def isNotPR = !env.CHANGE_ID || env.CHANGE_ID.trim() == ""
-                    def isMasterOc2Branch = env.GIT_BRANCH?.trim() == 'origin/master-oc2'
+                    def isMasterOc2Branch = env.GIT_BRANCH?.trim() == 'origin/master-oc1'
                     return isNotPR && isMasterOc2Branch
                 }
             }
@@ -78,6 +78,16 @@ pipeline {
                     }
                 }
             }
+
+
+            steps {
+                script {
+                    // Use the SHA-256 checksum from the previous stage
+                    echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
+                    // Add further steps that require the checksum here
+                }
+            }
+
         }
 
     }
