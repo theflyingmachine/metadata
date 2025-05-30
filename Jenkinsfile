@@ -74,9 +74,13 @@ pipeline {
                         "file_path=${BUCKET_DEST_DIR}.zip"
                     ]) {
                        sh '''
-                            python3 -m venv venv
-                            . venv/bin/activate
-                            pip install oci
+                           if [ ! -d "venv" ]; then
+                                python3 -m venv venv
+                                . venv/bin/activate
+                                pip install oci
+                            else
+                                . venv/bin/activate
+                            fi
                             python3 upload_zip_to_oci.py
                             '''
                     }
