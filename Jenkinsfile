@@ -40,8 +40,8 @@ pipeline {
             when {
                    expression {
                     def isNotPR = !env.CHANGE_ID || env.CHANGE_ID.trim() == ""
-                    def isMasterOc2Branch = env.GIT_BRANCH?.trim() == 'origin/master-oc1'
-                    return isNotPR && isMasterOc2Branch
+                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("origin/master")
+                    return isNotPR && isMasterBranch
                 }
             }
             steps {
@@ -49,9 +49,9 @@ pipeline {
                     // Create a zip file containing the SITE_DBA and SLA_DBA folders
                     sh 'mkdir ${BUCKET_DEST_DIR}'
                     sh 'mv *_DBA/ ${BUCKET_DEST_DIR}'
-                    sh 'zip -r LON_METADATA.zip ${BUCKET_DEST_DIR}'
+                    sh 'zip -r ${BUCKET_DEST_DIR}.zip ${BUCKET_DEST_DIR}'
                     // Calculate SHA-256 checksum and store it in a variable
-                    def sha256 = sh(script: 'sha256sum LON_METADATA.zip | awk \'{ print $1 }\'', returnStdout: true).trim()
+                    def sha256 = sh(script: 'sha256sum ${BUCKET_DEST_DIR}.zip | awk \'{ print $1 }\'', returnStdout: true).trim()
                     echo "SHA-256: ${sha256}"
                     env.ZIP_SHA256 = sha256
                 }
@@ -62,8 +62,8 @@ pipeline {
             when {
                 expression {
                     def isNotPR = !env.CHANGE_ID || env.CHANGE_ID.trim() == ""
-                    def isMasterOc2Branch = env.GIT_BRANCH?.trim() == 'origin/master-oc1'
-                    return isNotPR && isMasterOc2Branch
+                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("origin/master")
+                    return isNotPR && isMasterBranch
                 }
             }
             steps {
@@ -71,7 +71,7 @@ pipeline {
                     file(credentialsId: OCI_CONFIG_FILE_ID, variable: 'OCI_KEY_FILE')
                 ]) {
                     withEnv([
-                        'file_path=LON_METADATA.zip'
+                        'file_path=${BUCKET_DEST_DIR}.zip'
                     ]) {
                        sh '''
                             python3 -m venv venv
