@@ -79,7 +79,7 @@ pipeline {
                 }
                 // Use the SHA-256 checksum from the previous stage
                 echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
-                // Add further steps that require the checksum here
+                // Add further steps that require the checksum her
             }
 
 
