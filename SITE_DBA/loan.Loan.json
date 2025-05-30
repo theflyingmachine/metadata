@@ -39,7 +39,7 @@
             "id": 4,
             "tenant_id": 3,
             "name": "Beetakk",
-            "amount": "55000.00",
+            "amount": "550000000.00",
             "interest_rate": "0.00",
             "lending_date": "2023-01-01T00:00:00",
             "status": true,
