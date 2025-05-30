@@ -34,7 +34,7 @@
             "id": 1,
             "customer_id_id": 1,
             "bill_number": "MB-1-2020-11-LMZW8AF",
-            "amount": "3682.00",
+            "amount": "36822.00",
             "bill_last_data_date": "2020-11-08T00:00:00",
             "bill_generated_date": "2020-11-21T19:27:29.972447",
             "mongo_id": null
