@@ -77,7 +77,7 @@ pipeline {
 
                         sh """
                             id
-                            sudo mkdir -p ~/.oci
+                            mkdir -p ~/.oci
                             cp "${OCI_CONFIG_FILE}" ~/.oci/config
                             cp "${OCI_KEY_FILE}" ~/.oci/svc.pem
                             chmod 600 -R ~/.oci
