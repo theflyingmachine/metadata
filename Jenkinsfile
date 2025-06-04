@@ -78,6 +78,7 @@ pipeline {
                         sh """
                             id
                             pwd
+                            ls -l
                             cp "${OCI_CONFIG_FILE}" ${WORKSPACE}/config
                             cp "${OCI_KEY_FILE}" ${WORKSPACE}/svc.pem
                             chmod 600 ${WORKSPACE}/config
@@ -89,8 +90,7 @@ pipeline {
                                        --bucket-name ${OCI_BUCKET_NAME} \
                                        --file ${BUCKET_DEST_DIR}.zip \
                                        --name ${BUCKET_DEST_DIR}.zip \
-                                       --config-file ${WORKSPACE}/config \
-                                      --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\
+                                       --config-file ${WORKSPACE}/config
                         """
 //                         unstash "oci_zip"
 //                         sh """
