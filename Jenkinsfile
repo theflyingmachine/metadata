@@ -75,6 +75,16 @@ pipeline {
 
                         sh "chmod -R a+rX ${WORKSPACE}"
 
+                        sh """
+                            docker run --rm \
+                                -u \$(id -u):\$(id -g) \
+                                -v "${WORKSPACE}:/app" \
+                                -w /app \
+                                ${DOCKER_IMAGE_NAME} \
+                                ls -lh "/app/${BUCKET_DEST_DIR}.zip"
+                        """
+
+
 
 
 
@@ -96,7 +106,6 @@ pipeline {
                                 oci os object put \
                                     --bucket-name ${OCI_BUCKET_NAME} \
                                     --file /app/${BUCKET_DEST_DIR}.zip \
-                                    --file ${WORKSPACE}/${BUCKET_DEST_DIR}.zip \
                                     --name ${BUCKET_DEST_DIR}.zip \
                                     --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\"}'
                         """
