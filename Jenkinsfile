@@ -77,10 +77,11 @@ pipeline {
 
                         sh """
                             id
-                            mkdir -p ~/.oci
-                            cp "${OCI_CONFIG_FILE}" ~/.oci/config
-                            cp "${OCI_KEY_FILE}" ~/.oci/svc.pem
-                            chmod 600 -R ~/.oci
+                            pwd
+                            mkdir -p /var/.oci
+                            cp "${OCI_CONFIG_FILE}" /var/.oci/config
+                            cp "${OCI_KEY_FILE}" /var/.oci/svc.pem
+                            chmod 600 -R /var/.oci
                         """
 
                          sh """
@@ -88,6 +89,7 @@ pipeline {
                                        --bucket-name ${OCI_BUCKET_NAME} \
                                        --file ${BUCKET_DEST_DIR}.zip \
                                        --name ${BUCKET_DEST_DIR}.zip \
+                                       --config /var/.oci/config \
                                       --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\
                         """
 //                         unstash "oci_zip"
