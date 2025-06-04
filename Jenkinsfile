@@ -4,8 +4,6 @@ pipeline {
     environment {
         OCI_BUCKET_NAME = 'LightsOn-Metadata-bucket'
         BUCKET_DEST_DIR = env.GIT_BRANCH.tokenize('/').last()
-        OCI_CONFIG_FILE_ID = 'OCI_SVC_CONFIG' // Jenkins credential ID for OCI config file
-        OCI_KEY_FILE_ID = 'OCI_SVC_KEY' // Jenkins credential ID for OCI config file
         BUCKET_NAMESPACE = 'bmsfecivotax'
         DOCKER_IMAGE_NAME = 'json-validator:latest'
     }
@@ -70,8 +68,8 @@ pipeline {
             }
             steps {
                 withCredentials([
-                    file(credentialsId: OCI_CONFIG_FILE_ID, variable: 'OCI_CONFIG_FILE'),
-                    file(credentialsId: OCI_KEY_FILE_ID, variable: 'OCI_KEY_FILE')
+                    file(credentialsId: 'OCI_SVC_CONFIG', variable: 'OCI_CONFIG_FILE'),
+                    file(credentialsId: 'OCI_SVC_KEY', variable: 'OCI_KEY_FILE')
                 ]) {
                     script {
                         // Create a temporary directory for OCI config
