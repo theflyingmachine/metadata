@@ -69,11 +69,12 @@ pipeline {
                 ]) {
                     script {
                         def ociConfigDir = "${WORKSPACE}/.oci"
-
-
                         sh "ls -l ${WORKSPACE}/${BUCKET_DEST_DIR}.zip"
+
                         sh "chmod 644 ${BUCKET_DEST_DIR}.zip"
+
                         sh "chmod -R a+rX ${WORKSPACE}"
+
                         sh """
                             docker run --rm \
                                 -u $(id -u):$(id -g) \
