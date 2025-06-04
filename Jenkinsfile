@@ -77,7 +77,6 @@ pipeline {
 
                         sh """
                             id
-                            whoami
                             sudo mkdir -p ~/.oci
                             cp "${OCI_CONFIG_FILE}" ~/.oci/config
                             cp "${OCI_KEY_FILE}" ~/.oci/svc.pem
