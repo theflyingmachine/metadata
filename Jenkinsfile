@@ -76,8 +76,18 @@ pipeline {
                         sh "chmod -R a+rX ${WORKSPACE}"
                         sh """
                             docker run --rm -v "${WORKSPACE}:/app" -w /app ${DOCKER_IMAGE_NAME} \
-                            sh -c 'ls -lah /app'
+                            pwd
                             """
+
+                        sh '''
+                            echo "Zip file location:"
+                            find ${WORKSPACE} -name "*.zip"
+
+                            echo "Trying to mount the directory where zip actually is:"
+                            docker run --rm -v "${WORKSPACE}:/app" -w /app ${DOCKER_IMAGE_NAME} \
+                            sh -c "find /app -name '*.zip' -exec ls -lh {} \;"
+                            '''
+
 
 
                         sh """
