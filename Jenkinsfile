@@ -20,14 +20,6 @@ pipeline {
 
     stages {
 
-//         stage('Build Docker Image') {
-//             steps {
-//                 script {
-//                     sh "docker build -f Dockerfile --rm --network=host -t ${DOCKER_IMAGE_NAME} ."
-//                 }
-//             }
-//         }
-
         stage('Validate JSON Files') {
             steps {
                 script {
@@ -55,7 +47,6 @@ pipeline {
                     def sha256 = sh(script: "sha256sum ${BUCKET_DEST_DIR}.zip | awk '{print \$1}'", returnStdout: true).trim()
                     echo "SHA-256: ${sha256}"
                     env.ZIP_SHA256 = sha256
-//                     stash includes: "${BUCKET_DEST_DIR}.zip", name: "oci_zip"
                 }
             }
         }
@@ -76,9 +67,6 @@ pipeline {
                     script {
 
                         sh """
-                            id
-                            pwd
-                            ls -l
                             cp "${OCI_CONFIG_FILE}" ${WORKSPACE}/config
                             cp "${OCI_KEY_FILE}" ${WORKSPACE}/svc.pem
                             chmod 777 ${WORKSPACE}/config
@@ -94,20 +82,6 @@ pipeline {
                                        --name ${BUCKET_DEST_DIR}.zip \
                                        --config-file ${WORKSPACE}/config
                         """
-//                         unstash "oci_zip"
-//                         sh """
-//                             docker run --rm \
-//                                 -v "${ociConfigDir}:/root/.oci" \
-//                                 -v "${WORKSPACE}:/app" \
-//                                 ${DOCKER_IMAGE_NAME} \
-//                                 oci os object put \
-//                                     --bucket-name ${OCI_BUCKET_NAME} \
-//                                     --file /root/.oci/${BUCKET_DEST_DIR}.zip \
-//                                     --name ${BUCKET_DEST_DIR}.zip \
-//                                     --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\"}'
-//                         """
-
-//                         sh "rm -rf ${ociConfigDir}"
                         echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
                     }
                 }
