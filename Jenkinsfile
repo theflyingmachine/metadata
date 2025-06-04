@@ -69,43 +69,12 @@ pipeline {
                 ]) {
                     script {
                         def ociConfigDir = "${WORKSPACE}/.oci"
-                        sh "ls -l ${WORKSPACE}"
-
-                        sh "chmod 644 ${BUCKET_DEST_DIR}.zip"
-
-                        sh "chmod -R a+rX ${WORKSPACE}"
-                        sh """
-                            docker run --rm -v "${WORKSPACE}:/app" -w /app ${DOCKER_IMAGE_NAME} \
-                            ls -l
-                            """
-
-                        sh '''
-                            echo "Searching for zip in WORKSPACE:"
-                            find ${WORKSPACE} -name "*.zip" -exec ls -lh {} \\;
-                            '''
-
-
-
-
-                        sh """
-                            docker run --rm \
-                                -u \$(id -u):\$(id -g) \
-                                -v "${WORKSPACE}:/app" \
-                                -w /app \
-                                ${DOCKER_IMAGE_NAME} \
-                                ls -lh "/app/${BUCKET_DEST_DIR}.zip"
-                        """
-
-
-
-
-
-
 
                         sh """
                             mkdir -p ${ociConfigDir}
                             cp "${OCI_CONFIG_FILE}" ${ociConfigDir}/config
                             cp "${OCI_KEY_FILE}" ${ociConfigDir}/svc.pem
+                            cp "${BUCKET_DEST_DIR}.zip" ${ociConfigDir}/${BUCKET_DEST_DIR}.zip
                             chmod 600 ${ociConfigDir}/config
                             chmod 600 ${ociConfigDir}/svc.pem
                         """
@@ -113,11 +82,10 @@ pipeline {
                         sh """
                             docker run --rm \
                                 -v "${ociConfigDir}:/root/.oci" \
-                                -v "${WORKSPACE}:/app" \
                                 ${DOCKER_IMAGE_NAME} \
                                 oci os object put \
                                     --bucket-name ${OCI_BUCKET_NAME} \
-                                    --file /app/${BUCKET_DEST_DIR}.zip \
+                                    --file /root/.oci/${BUCKET_DEST_DIR}.zip \
                                     --name ${BUCKET_DEST_DIR}.zip \
                                     --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\"}'
                         """
