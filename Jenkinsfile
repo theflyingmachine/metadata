@@ -75,14 +75,15 @@ pipeline {
 
                         sh "chmod -R a+rX ${WORKSPACE}"
 
-                        sh """
+                        sh '''
                             docker run --rm \
                                 -u $(id -u):$(id -g) \
                                 -v "${WORKSPACE}:/app" \
                                 -w /app \
                                 ${DOCKER_IMAGE_NAME} \
                                 ls -lh /app && ls -lh /app/${BUCKET_DEST_DIR}.zip
-                        """
+                        '''
+
 
 
 
