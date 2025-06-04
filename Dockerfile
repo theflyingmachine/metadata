@@ -4,7 +4,7 @@ FROM container-registry.oracle.com/os/oraclelinux:8-slim
 # Install necessary packages and oci-cli
 RUN set -ex \
     && microdnf update -y \
-    && microdnf install -y python39 python39-pip git curl unzip \
+    && microdnf install -y python39 python39-pip git curl unzip zip\
     && microdnf clean all \
     \
     # Install OCI CLI using Oracle's installer

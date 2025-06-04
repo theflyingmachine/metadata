@@ -55,7 +55,7 @@ pipeline {
                     def sha256 = sh(script: "sha256sum ${BUCKET_DEST_DIR}.zip | awk '{print \$1}'", returnStdout: true).trim()
                     echo "SHA-256: ${sha256}"
                     env.ZIP_SHA256 = sha256
-                    stash includes: "${BUCKET_DEST_DIR}.zip", name: "oci_zip"
+//                     stash includes: "${BUCKET_DEST_DIR}.zip", name: "oci_zip"
                 }
             }
         }
@@ -78,33 +78,33 @@ pipeline {
 
                         sh """
                             mkdir -p ${ociConfigDir}
-                            cp "${OCI_CONFIG_FILE}" ${ociConfigDir}/config
-                            cp "${OCI_KEY_FILE}" ${ociConfigDir}/svc.pem
-                            cp "${BUCKET_DEST_DIR}.zip" ${ociConfigDir}/${BUCKET_DEST_DIR}.zip
-                            chmod 600 ${ociConfigDir}/config
-                            chmod 600 ${ociConfigDir}/svc.pem
+                            cp "${OCI_CONFIG_FILE}" ~/.oci/config
+                            cp "${OCI_KEY_FILE}" ${ociConfigDir} ~/.oci/svc.pem
+                            chmod 600 ~/.oci/config
+                            chmod 600 ~/.oci/svc.pem
                         """
 
                          sh """
-                            docker run --rm \
-                                -v "${ociConfigDir}:/root/.oci" \
-                                ${DOCKER_IMAGE_NAME} \
-                                ls -l /root/.oci
+                            oci os object put \
+                                       --bucket-name ${OCI_BUCKET_NAME} \
+                                       --file ${BUCKET_DEST_DIR}.zip \
+                                       --name ${BUCKET_DEST_DIR}.zip \
+                                      --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\
                         """
-                        unstash "oci_zip"
-                        sh """
-                            docker run --rm \
-                                -v "${ociConfigDir}:/root/.oci" \
-                                -v "${WORKSPACE}:/app" \
-                                ${DOCKER_IMAGE_NAME} \
-                                oci os object put \
-                                    --bucket-name ${OCI_BUCKET_NAME} \
-                                    --file /root/.oci/${BUCKET_DEST_DIR}.zip \
-                                    --name ${BUCKET_DEST_DIR}.zip \
-                                    --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\"}'
-                        """
+//                         unstash "oci_zip"
+//                         sh """
+//                             docker run --rm \
+//                                 -v "${ociConfigDir}:/root/.oci" \
+//                                 -v "${WORKSPACE}:/app" \
+//                                 ${DOCKER_IMAGE_NAME} \
+//                                 oci os object put \
+//                                     --bucket-name ${OCI_BUCKET_NAME} \
+//                                     --file /root/.oci/${BUCKET_DEST_DIR}.zip \
+//                                     --name ${BUCKET_DEST_DIR}.zip \
+//                                     --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\"}'
+//                         """
 
-                        sh "rm -rf ${ociConfigDir}"
+//                         sh "rm -rf ${ociConfigDir}"
                         echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
                     }
                 }
