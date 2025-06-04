@@ -4,7 +4,8 @@ pipeline {
     environment {
         OCI_BUCKET_NAME = 'LightsOn-Metadata-bucket'
         BUCKET_DEST_DIR = env.GIT_BRANCH.tokenize('/').last()
-        OCI_CONFIG_FILE_ID = 'OCI_CONFIG' // Jenkins credential ID for OCI config file
+        OCI_CONFIG_FILE_ID = 'OCI_SVC_CONFIG' // Jenkins credential ID for OCI config file
+        OCI_KEY_FILE_ID = 'OCI_SVC_KEY' // Jenkins credential ID for OCI config file
         BUCKET_NAMESPACE = 'bmsfecivotax'
         DOCKER_IMAGE_NAME = 'json-validator:latest'
     }
@@ -29,7 +30,7 @@ pipeline {
             steps {
                 script {
                     // Run Docker container to validate JSON files
-                    def status = sh(script: "docker run --rm ${DOCKER_IMAGE_NAME}", returnStatus: true)
+                    def status = sh(script: "docker run --rm ${DOCKER_IMAGE_NAME} python3 validate_json.py", returnStatus: true)
                     if (status != 0) {
                         error 'JSON validation failed.'
                     }
@@ -69,24 +70,36 @@ pipeline {
             }
             steps {
                 withCredentials([
-                    file(credentialsId: OCI_CONFIG_FILE_ID, variable: 'OCI_KEY_FILE')
+                    file(credentialsId: OCI_CONFIG_FILE_ID, variable: 'OCI_CONFIG_FILE'),
+                    file(credentialsId: OCI_KEY_FILE_ID, variable: 'OCI_KEY_FILE')
                 ]) {
-                    withEnv([
-                        "file_path=${BUCKET_DEST_DIR}.zip",
-                        "namespace=${BUCKET_NAMESPACE}",
-                        "bucket_name=${OCI_BUCKET_NAME}"
-                    ]) {
-                       sh '''
-                           if [ ! -d "venv" ]; then
-                                python3 -m venv venv
-                                . venv/bin/activate
-                                pip install oci
-                            else
-                                . venv/bin/activate
-                            fi
-                            python3 upload_zip_to_oci.py
-                            '''
-                    }
+                    script {
+                        // Create a temporary directory for OCI config
+                        def ociConfigDir = "${WORKSPACE}/.oci"
+                        sh """
+                            mkdir -p ${ociConfigDir}
+                            cp "${OCI_CONFIG_FILE}" ${ociConfigDir}/config
+                            cp "${OCI_KEY_FILE}" ${ociConfigDir}/svc.pem
+                            chmod 600 ${ociConfigDir}/config
+                            chmod 600 ${ociConfigDir}/svc.pem
+                        """
+                        
+                        // Run the OCI CLI command in the container with the config mounted
+                        sh """
+                            docker run --rm \
+                                -v "${ociConfigDir}:/root/.oci" \
+                                -v "${WORKSPACE}:/app" \
+                                -w /app \
+                                ${DOCKER_IMAGE_NAME} \
+                                oci os object put \
+                                    --bucket-name "${OCI_BUCKET_NAME}" \
+                                    --file "${BUCKET_DEST_DIR}.zip" \
+                                    --name "${BUCKET_DEST_DIR}.zip" \
+                                    --metadata '{"sha256":"'${ZIP_SHA256}'"}'
+                        """
+                        
+                        // Clean up
+                        sh "rm -rf ${ociConfigDir}"
                 }
                 echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
             }

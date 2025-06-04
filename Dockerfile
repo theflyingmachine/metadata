@@ -1,11 +1,18 @@
 # Use Oracle Linux 8 Slim as the base image
 FROM container-registry.oracle.com/os/oraclelinux:8-slim
 
-# Install necessary packages
+# Install necessary packages and oci-cli
 RUN set -ex \
     && microdnf update -y \
-    && microdnf install -y python39 python39-pip git \
-    && microdnf clean all
+    && microdnf install -y python39 python39-pip git curl unzip \
+    && microdnf clean all \
+    \
+    # Install OCI CLI using Oracle's installer
+    && curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh \
+        | bash -s -- --accept-all-defaults --install-dir /usr/local/lib/oci-cli \
+    \
+    # Symlink oci to a location in PATH
+    && ln -s /usr/local/lib/oci-cli/bin/oci /usr/local/bin/oci
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -13,5 +20,4 @@ WORKDIR /app
 # Copy all files from the current directory on the host to the /app directory in the container
 COPY . /app
 
-# Command to validate JSON files
-CMD ["python3", "validate_json.py"]
+ENV PATH="/usr/local/lib/oci-cli/bin:$PATH"
