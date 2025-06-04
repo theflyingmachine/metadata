@@ -69,6 +69,20 @@ pipeline {
                 ]) {
                     script {
                         def ociConfigDir = "${WORKSPACE}/.oci"
+
+
+                        sh "ls -l ${WORKSPACE}/${BUCKET_DEST_DIR}.zip"
+
+                        sh """
+                            docker run --rm \
+                                -v "${WORKSPACE}:/app" \
+                                -w /app \
+                                ${DOCKER_IMAGE_NAME} \
+                                ls -lh /app && ls -lh /app/${BUCKET_DEST_DIR}.zip
+                        """
+
+
+
                         sh """
                             mkdir -p ${ociConfigDir}
                             cp "${OCI_CONFIG_FILE}" ${ociConfigDir}/config
