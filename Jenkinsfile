@@ -73,7 +73,6 @@ pipeline {
                             mkdir -p ${ociConfigDir}
                             cp "${OCI_CONFIG_FILE}" ${ociConfigDir}/config
                             cp "${OCI_KEY_FILE}" ${ociConfigDir}/svc.pem
-                            cp "${BUCKET_DEST_DIR}.zip" ${ociConfigDir}/${BUCKET_DEST_DIR}.zip
                             chmod 600 ${ociConfigDir}/config
                             chmod 600 ${ociConfigDir}/svc.pem
                         """
@@ -86,7 +85,7 @@ pipeline {
                                 ${DOCKER_IMAGE_NAME} \
                                 oci os object put \
                                     --bucket-name ${OCI_BUCKET_NAME} \
-                                    --file ${BUCKET_DEST_DIR}.zip \
+                                    --file /app/${BUCKET_DEST_DIR}.zip \
                                     --name ${BUCKET_DEST_DIR}.zip \
                                     --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\"}'
                         """
