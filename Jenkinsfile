@@ -1,10 +1,10 @@
 pipeline {
     agent {
-              dockerfile {
-                    filename 'Dockerfile'
-                    additionalBuildArgs '--network=host --rm'
-                }
-            }
+        dockerfile {
+          filename 'Dockerfile'
+          additionalBuildArgs '--network=host --rm'
+        }
+    }
 
     environment {
         OCI_BUCKET_NAME = 'LightsOn-Metadata-bucket'
@@ -69,13 +69,12 @@ pipeline {
                         sh """
                             cp "${OCI_CONFIG_FILE}" ${WORKSPACE}/config
                             cp "${OCI_KEY_FILE}" ${WORKSPACE}/svc.pem
-                            chmod 777 ${WORKSPACE}/config
+                            chmod 700 ${WORKSPACE}/config
                             echo 'key_file = ${WORKSPACE}/svc.pem' >> ${WORKSPACE}/config
-                            chmod 600 ${WORKSPACE}/svc.pem
                             chmod 600 ${WORKSPACE}/svc.pem
                         """
 
-                         sh """
+                        sh """
                             oci os object put \
                                        --bucket-name ${OCI_BUCKET_NAME} \
                                        --file ${BUCKET_DEST_DIR}.zip \
@@ -88,11 +87,11 @@ pipeline {
             }
         }
 
-    } // closes stages
+    }
 
     post {
         always {
             cleanWs()
         }
     }
-} // closes pipeline
+}
