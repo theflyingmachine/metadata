@@ -76,10 +76,10 @@ pipeline {
                     script {
 
                         sh """
-                            cp "${OCI_CONFIG_FILE}" .oci/config
-                            cp "${OCI_KEY_FILE}" .oci/svc.pem
-                            chmod 600 .oci/config
-                            chmod 600 .oci/svc.pem
+                            mkdir -p /root/.oci
+                            cp "${OCI_CONFIG_FILE}" /root/.oci/config
+                            cp "${OCI_KEY_FILE}" /root/.oci/svc.pem
+                            chmod 600 -R /root/.oci
                         """
 
                          sh """
