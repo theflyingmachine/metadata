@@ -74,6 +74,11 @@ pipeline {
                         sh "chmod 644 ${BUCKET_DEST_DIR}.zip"
 
                         sh "chmod -R a+rX ${WORKSPACE}"
+                        sh """
+                            docker run --rm -v "${WORKSPACE}:/app" -w /app ${DOCKER_IMAGE_NAME} \
+                            sh -c 'ls -lah /app'
+                            """
+
 
                         sh """
                             docker run --rm \
