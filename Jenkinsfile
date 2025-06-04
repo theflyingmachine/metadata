@@ -74,14 +74,12 @@ pipeline {
                     file(credentialsId: 'OCI_SVC_KEY', variable: 'OCI_KEY_FILE')
                 ]) {
                     script {
-                        def ociConfigDir = "${WORKSPACE}/.oci"
 
                         sh """
-                            mkdir -p ${ociConfigDir}
-                            cp "${OCI_CONFIG_FILE}" ~/.oci/config
-                            cp "${OCI_KEY_FILE}" ${ociConfigDir} ~/.oci/svc.pem
-                            chmod 600 ~/.oci/config
-                            chmod 600 ~/.oci/svc.pem
+                            cp "${OCI_CONFIG_FILE}" .oci/config
+                            cp "${OCI_KEY_FILE}" .oci/svc.pem
+                            chmod 600 .oci/config
+                            chmod 600 .oci/svc.pem
                         """
 
                          sh """
