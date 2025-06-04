@@ -91,8 +91,7 @@ pipeline {
                                        --bucket-name ${OCI_BUCKET_NAME} \
                                        --file ${BUCKET_DEST_DIR}.zip \
                                        --name ${BUCKET_DEST_DIR}.zip \
-                                       --config-file ${WORKSPACE}/config \
-                                       --key-file ${WORKSPACE}/svc.pem
+                                       --config-file ${WORKSPACE}/config
                         """
 //                         unstash "oci_zip"
 //                         sh """
