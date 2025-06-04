@@ -73,39 +73,26 @@ pipeline {
                             mkdir -p ${ociConfigDir}
                             cp "${OCI_CONFIG_FILE}" ${ociConfigDir}/config
                             cp "${OCI_KEY_FILE}" ${ociConfigDir}/svc.pem
+                            cp "${BUCKET_DEST_DIR}.zip" ${ociConfigDir}/${BUCKET_DEST_DIR}.zip
                             chmod 600 ${ociConfigDir}/config
                             chmod 600 ${ociConfigDir}/svc.pem
-                        """
-
-                        // Debug: Verify files exist before docker run
-                        sh """
-                            echo "Current directory: \$(pwd)"
-                            echo "Looking for zip file: ${BUCKET_DEST_DIR}.zip"
-                            ls -la "${BUCKET_DEST_DIR}.zip" || echo 'Zip file not found!'
-                            echo "OCI config directory: ${ociConfigDir}"
-                            ls -la "${ociConfigDir}/"
                         """
 
                         sh """
                             docker run --rm \
                                 -v "${ociConfigDir}:/root/.oci" \
                                 -v "${WORKSPACE}:/app" \
+                                -w /app \
                                 ${DOCKER_IMAGE_NAME} \
-                                sh -c '
-                                    echo "Inside container, current directory: \$(pwd)" && \
-                                    echo "Files in /app:" && \
-                                    ls -la /app && \
-                                    echo "Trying to upload: /app/${BUCKET_DEST_DIR}.zip" && \
-                                    oci os object put \
-                                        --bucket-name "${OCI_BUCKET_NAME}" \
-                                        --file "/app/${BUCKET_DEST_DIR}.zip" \
-                                        --name "${BUCKET_DEST_DIR}.zip" \
-                                        --metadata "{\\\"sha256\\":\\\"${env.ZIP_SHA256}\\\"}"
-                                '
+                                oci os object put \
+                                    --bucket-name ${OCI_BUCKET_NAME} \
+                                    --file ${BUCKET_DEST_DIR}.zip \
+                                    --name ${BUCKET_DEST_DIR}.zip \
+                                    --metadata '{\"sha256\":\"'"${env.ZIP_SHA256}"'\"}'
                         """
 
                         sh "rm -rf ${ociConfigDir}"
-                        echo "Successfully uploaded ${BUCKET_DEST_DIR}.zip with SHA-256: ${env.ZIP_SHA256}"
+                        echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
                     }
                 }
             }
