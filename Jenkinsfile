@@ -81,6 +81,7 @@ pipeline {
                             ls -l
                             cp "${OCI_CONFIG_FILE}" ${WORKSPACE}/config
                             cp "${OCI_KEY_FILE}" ${WORKSPACE}/svc.pem
+                            echo 'key_file = ${WORKSPACE}/svc.pem' >> ${WORKSPACE}/config
                             chmod 600 ${WORKSPACE}/config
                             chmod 600 ${WORKSPACE}/svc.pem
                         """
