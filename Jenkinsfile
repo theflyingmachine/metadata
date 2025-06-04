@@ -69,14 +69,14 @@ pipeline {
                 ]) {
                     script {
                         def ociConfigDir = "${WORKSPACE}/.oci"
-                        sh "ls -l ${WORKSPACE}/${BUCKET_DEST_DIR}.zip"
+                        sh "ls -l ${WORKSPACE}"
 
                         sh "chmod 644 ${BUCKET_DEST_DIR}.zip"
 
                         sh "chmod -R a+rX ${WORKSPACE}"
                         sh """
                             docker run --rm -v "${WORKSPACE}:/app" -w /app ${DOCKER_IMAGE_NAME} \
-                            pwd
+                            ls -l
                             """
 
                         sh '''
