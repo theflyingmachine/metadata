@@ -79,6 +79,13 @@ pipeline {
                             chmod 600 ${ociConfigDir}/svc.pem
                         """
 
+                         sh """
+                            docker run --rm \
+                                -v "${ociConfigDir}:/root/.oci" \
+                                ${DOCKER_IMAGE_NAME} \
+                                ls -l /root/.oci
+                        """
+
                         sh """
                             docker run --rm \
                                 -v "${ociConfigDir}:/root/.oci" \
