@@ -14,10 +14,7 @@ RUN set -ex \
     # Symlink oci to a location in PATH
     && ln -s /usr/local/lib/oci-cli/bin/oci /usr/local/bin/oci
 
-# Set the working directory inside the container
 WORKDIR /app
-
-# Copy all files from the current directory on the host to the /app directory in the container
 COPY . /app
 
 ENV PATH="/usr/local/lib/oci-cli/bin:$PATH"

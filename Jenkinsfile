@@ -10,7 +10,8 @@ pipeline {
         OCI_BUCKET_NAME = 'LightsOn-Metadata-bucket'
         BUCKET_DEST_DIR = env.GIT_BRANCH.tokenize('/').last()
         BUCKET_NAMESPACE = 'bmsfecivotax'
-        DOCKER_IMAGE_NAME = 'json-validator:latest'
+        OCI_SVC_CONFIG_ID = OCI_SVC_CONFIG
+        OCI_SVC_KEY_ID = OCI_SVC_KEY
     }
 
     options {
@@ -61,8 +62,8 @@ pipeline {
             }
             steps {
                 withCredentials([
-                    file(credentialsId: 'OCI_SVC_CONFIG', variable: 'OCI_CONFIG_FILE'),
-                    file(credentialsId: 'OCI_SVC_KEY', variable: 'OCI_KEY_FILE')
+                    file(credentialsId: OCI_SVC_CONFIG_ID, variable: 'OCI_CONFIG_FILE'),
+                    file(credentialsId: OCI_SVC_KEY_ID, variable: 'OCI_KEY_FILE')
                 ]) {
                     script {
 
