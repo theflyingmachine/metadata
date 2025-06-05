@@ -72,6 +72,7 @@ pipeline {
                             cp "${OCI_KEY_FILE}" ${WORKSPACE}/svc.pem
                             chmod 700 ${WORKSPACE}/config
                             echo 'key_file = ${WORKSPACE}/svc.pem' >> ${WORKSPACE}/config
+                            chmod 600 ${WORKSPACE}/config
                             chmod 600 ${WORKSPACE}/svc.pem
                         """
 
