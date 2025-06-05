@@ -10,8 +10,8 @@ pipeline {
         OCI_BUCKET_NAME = 'LightsOn-Metadata-bucket'
         BUCKET_DEST_DIR = env.GIT_BRANCH.tokenize('/').last()
         BUCKET_NAMESPACE = 'bmsfecivotax'
-        OCI_SVC_CONFIG_ID = OCI_SVC_CONFIG
-        OCI_SVC_KEY_ID = OCI_SVC_KEY
+        OCI_SVC_CONFIG_ID = 'OCI_SVC_CONFIG'
+        OCI_SVC_KEY_ID = 'OCI_SVC_KEY'
     }
 
     options {
