@@ -82,6 +82,7 @@ pipeline {
                                        --file ${BUCKET_DEST_DIR}.zip \
                                        --name ${BUCKET_DEST_DIR}.zip \
                                        --config-file ${WORKSPACE}/config
+                                       --force
                         """
                         echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
                     }
