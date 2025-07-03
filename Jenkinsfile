@@ -97,7 +97,7 @@ pipeline {
 //                         sh """
 //                             oci --config-file ${WORKSPACE}/config \
 //                             raw-request --http-method POST \
-//                             --target-uri "https://slaps.oci.oraclecorp.com/slaps/v1/casperToCasper/receiver/notification?manifestResourceCompartmentId=ocid1.compartment.oc1..aaaaaaaa2vuehpa3dkshwjkg2lzmlmp55mjkzqdvbht5rsxlf3olm4pzgtna" \
+//                             --target-uri "https://slaps.oci.oraclecorp.com/slaps/v1/casperToCasper/receiver/notification?manifestResourceCompartmentId=${OCI_COMPARTMENT}" \
 //                             --request-body '{
 //                                 "bucketName": "${OCI_BUCKET_NAME}",
 //                                 "objectName": "${BUCKET_DEST_DIR}.zip",
