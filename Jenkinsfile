@@ -12,6 +12,10 @@ pipeline {
         BUCKET_NAMESPACE = 'bmsfecivotax'
         OCI_SVC_CONFIG_ID = 'OCI_SVC_CONFIG'
         OCI_SVC_KEY_ID = 'OCI_SVC_KEY'
+        CERNPRODSHAREDSVC1OC1_OCID = 'ocid1.tenancy.oc1..aaaaaaaamh7v4d6y5nfciy26ofaqmdyrkj3u277qiaemdwqif6oeoqvzkdbq'
+        OCI_COMPARTMENT = 'ocid1.compartment.oc1..aaaaaaaa2vuehpa3dkshwjkg2lzmlmp55mjkzqdvbht5rsxlf3olm4pzgtna'
+        OCI_REGION = 'us-ashburn-1'
+        PHONEBOOKID = 'OCI_SVC_KEY'
     }
 
     options {
@@ -36,7 +40,7 @@ pipeline {
             when {
                 expression {
                     def isNotPR = !env.CHANGE_ID || env.CHANGE_ID.trim() == ""
-                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("origin/master")
+                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("master")
                     return isNotPR && isMasterBranch
                 }
             }
@@ -56,7 +60,7 @@ pipeline {
             when {
                 expression {
                     def isNotPR = !env.CHANGE_ID || env.CHANGE_ID.trim() == ""
-                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("origin/master")
+                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("master")
                     return isNotPR && isMasterBranch
                 }
             }
@@ -88,27 +92,27 @@ pipeline {
 //                         ------------------------------------------------------------------------------------------------------
 //                         If Jenkins instance has access to OCI corporate network, Uncomment below steps to automate SLAPS scan.
 //                         For now, since we can not automate SLAPS scan, please execute the next command to initiate SLAPS
-//                         scan on the ZIP file. The command will be printed on the Jenkins console.
+//                         scan on the ZIP file. The command to be executed manually will be printed on the Jenkins console.
 //                         ------------------------------------------------------------------------------------------------------
-                        sh """
-                            oci --config-file ${WORKSPACE}/config \
-                            raw-request --http-method POST \
-                            --target-uri "https://slaps.oci.oraclecorp.com/slaps/v1/casperToCasper/receiver/notification?manifestResourceCompartmentId=ocid1.compartment.oc1..aaaaaaaa2vuehpa3dkshwjkg2lzmlmp55mjkzqdvbht5rsxlf3olm4pzgtna" \
-                            --request-body '{
-                                "bucketName": "${OCI_BUCKET_NAME}",
-                                "objectName": "${BUCKET_DEST_DIR}.zip",
-                                "checksum": "SHA256:${env.ZIP_SHA256}",
-                                "name": "${BUCKET_DEST_DIR}.zip",
-                                "version": "${env.BUILD_NUMBER}",
-                                "type": "generic",
-                                "description": "LightsOn Metadata",
-                                "tenancyId": "ocid1.tenancy.oc1..aaaaaaaamh7v4d6y5nfciy26ofaqmdyrkj3u277qiaemdwqif6oeoqvzkdbq",
-                                "namespace": "idjqh1xkxljy",
-                                "region": "us-ashburn-1",
-                                "phonebookId": "ohai_lightsonnetwork",
-                                "isReportFindings": false
-                            }'
-                        """
+//                         sh """
+//                             oci --config-file ${WORKSPACE}/config \
+//                             raw-request --http-method POST \
+//                             --target-uri "https://slaps.oci.oraclecorp.com/slaps/v1/casperToCasper/receiver/notification?manifestResourceCompartmentId=ocid1.compartment.oc1..aaaaaaaa2vuehpa3dkshwjkg2lzmlmp55mjkzqdvbht5rsxlf3olm4pzgtna" \
+//                             --request-body '{
+//                                 "bucketName": "${OCI_BUCKET_NAME}",
+//                                 "objectName": "${BUCKET_DEST_DIR}.zip",
+//                                 "checksum": "SHA256:${env.ZIP_SHA256}",
+//                                 "name": "${BUCKET_DEST_DIR}.zip",
+//                                 "version": "${env.BUILD_NUMBER}",
+//                                 "type": "generic",
+//                                 "description": "LightsOn Metadata",
+//                                 "tenancyId": "${CERNPRODSHAREDSVC1OC1_OCID}",
+//                                 "namespace": "${BUCKET_NAMESPACE}",
+//                                 "region": "${OCI_REGION}",
+//                                 "phonebookId": "${PHONEBOOKID}",
+//                                 "isReportFindings": false
+//                             }'
+//                         """
 
                         echo """--- IMPORTANT --- SLAPS SCAN ----
 =====================================================================================================
@@ -123,7 +127,7 @@ For further details, please refer to the following documentation:
 Reference: https://confluence.oraclecorp.com/confluence/display/ISD/OCI+ISD+Operations+-+SLAPS+Scanning+and+Artifacts+Push+Service
 =====================================================================================================
 
-oci raw-request --http-method POST --target-uri "https://slaps.oci.oraclecorp.com/slaps/v1/casperToCasper/receiver/notification?manifestResourceCompartmentId=ocid1.compartment.oc1..aaaaaaaa2vuehpa3dkshwjkg2lzmlmp55mjkzqdvbht5rsxlf3olm4pzgtna" --request-body '{"bucketName": "${OCI_BUCKET_NAME}","objectName": "${BUCKET_DEST_DIR}.zip","checksum": "SHA256:${env.ZIP_SHA256}","name": "${BUCKET_DEST_DIR}.zip","version": "${env.BUILD_NUMBER}","type": "generic","description": "LightsOn Metadata","tenancyId": "ocid1.tenancy.oc1..aaaaaaaamh7v4d6y5nfciy26ofaqmdyrkj3u277qiaemdwqif6oeoqvzkdbq","namespace": "idjqh1xkxljy","region": "us-ashburn-1","phonebookId": "ohai_lightsonnetwork","isReportFindings": false}'
+oci raw-request --http-method POST --target-uri "https://slaps.oci.oraclecorp.com/slaps/v1/casperToCasper/receiver/notification?manifestResourceCompartmentId=${OCI_COMPARTMENT}" --request-body '{"bucketName": "${OCI_BUCKET_NAME}","objectName": "${BUCKET_DEST_DIR}.zip","checksum": "SHA256:${env.ZIP_SHA256}","name": "${BUCKET_DEST_DIR}.zip","version": "${env.BUILD_NUMBER}","type": "generic","description": "LightsOn Metadata","tenancyId": "${CERNPRODSHAREDSVC1OC1_OCID}","namespace": "${BUCKET_NAMESPACE}","region": "${OCI_REGION}","phonebookId": "${PHONEBOOKID}","isReportFindings": false}'
 
                         """
                     }
