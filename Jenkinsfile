@@ -40,7 +40,7 @@ pipeline {
             when {
                 expression {
                     def isNotPR = !env.CHANGE_ID || env.CHANGE_ID.trim() == ""
-                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("master")
+                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("origin/master")
                     return isNotPR && isMasterBranch
                 }
             }
@@ -60,7 +60,7 @@ pipeline {
             when {
                 expression {
                     def isNotPR = !env.CHANGE_ID || env.CHANGE_ID.trim() == ""
-                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("master")
+                    def isMasterBranch = env.GIT_BRANCH?.trim().startsWith("origin/master")
                     return isNotPR && isMasterBranch
                 }
             }
