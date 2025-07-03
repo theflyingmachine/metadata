@@ -85,19 +85,43 @@ pipeline {
                                        --force
                         """
                         echo "Using SHA-256 checksum: ${env.ZIP_SHA256}"
-                        echo """--- IMPORTANT --- SLAPS SCAN ---- \n
+//                         ------------------------------------------------------------------------------------------------------
+//                         If Jenkins instance has access to OCI corporate network, Uncomment below steps to automate SLAPS scan.
+//                         For now, since we can not automate SLAPS scan, please execute the next command to initiate SLAPS
+//                         scan on the ZIP file. The command will be printed on the Jenkins console.
+//                         ------------------------------------------------------------------------------------------------------
+//                         sh """
+//                             oci --config-file ${WORKSPACE}/config \
+//                             raw-request --http-method POST \
+//                             --target-uri "https://slaps.oci.oraclecorp.com/slaps/v1/casperToCasper/receiver/notification?manifestResourceCompartmentId=ocid1.compartment.oc1..aaaaaaaa2vuehpa3dkshwjkg2lzmlmp55mjkzqdvbht5rsxlf3olm4pzgtna" \
+//                             --request-body '{
+//                                 "bucketName": "LightsOn-Metadata-bucket",
+//                                 "objectName": "master.zip",
+//                                 "checksum": "SHA256:ed4e0fab4628914ef5674320a6dfde88b9ab400e0c7abedf697b16492e19cd5c",
+//                                 "name": "master.zip",
+//                                 "version": "9",
+//                                 "type": "generic",
+//                                 "description": "LightsOn Metadata",
+//                                 "tenancyId": "ocid1.tenancy.oc1..aaaaaaaamh7v4d6y5nfciy26ofaqmdyrkj3u277qiaemdwqif6oeoqvzkdbq",
+//                                 "namespace": "idjqh1xkxljy",
+//                                 "region": "us-ashburn-1",
+//                                 "phonebookId": "ohai_lightsonnetwork",
+//                                 "isReportFindings": false
+//                             }'
+//                         """
+
+                        echo """--- IMPORTANT --- SLAPS SCAN ----
 =====================================================================================================
 Before deploying any artifact to the OC2 realm, it must be scanned using SLAPS. If the associated metadata is intended for the OC2 realm, please execute the following command to initiate the SLAPS scan on the ZIP file.
 
 Important Notes:
--The SLAPS scan can only be triggered from within the Oracle corporate network.
--Ensure that you are connected to the Oracle VPN before initiating the scan.
--Due to this network restriction, this step cannot be automated via Jenkins.
+ -The SLAPS scan can only be triggered from within the Oracle corporate network.
+ -Ensure that you are connected to the Oracle VPN before initiating the scan.
+ -Due to this network restriction, this step cannot be automated via Jenkins.
 
 For further details, please refer to the following documentation:
-Reference: https://confluence.oraclecorp.com/confluence/display/ISD/OCI+ISD+Operations+-+SLAPS+Scanning+and+Artifacts+Push+Service \n
-
-=====================================================================================================\n
+Reference: https://confluence.oraclecorp.com/confluence/display/ISD/OCI+ISD+Operations+-+SLAPS+Scanning+and+Artifacts+Push+Service
+=====================================================================================================
 
 oci raw-request --http-method POST --target-uri "https://slaps.oci.oraclecorp.com/slaps/v1/casperToCasper/receiver/notification?manifestResourceCompartmentId=ocid1.compartment.oc1..aaaaaaaa2vuehpa3dkshwjkg2lzmlmp55mjkzqdvbht5rsxlf3olm4pzgtna" --request-body '{"bucketName": "${OCI_BUCKET_NAME}","objectName": "${BUCKET_DEST_DIR}.zip","checksum": "SHA256:${env.ZIP_SHA256}","name": "${BUCKET_DEST_DIR}.zip","version": "${env.CHANGE_ID}","type": "generic","description": "LightsOn Metadata","tenancyId": "ocid1.tenancy.oc1..aaaaaaaamh7v4d6y5nfciy26ofaqmdyrkj3u277qiaemdwqif6oeoqvzkdbq","namespace": "idjqh1xkxljy","region": "us-ashburn-1","phonebookId": "ohai_lightsonnetwork","isReportFindings": false}'
 
